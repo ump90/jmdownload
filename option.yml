@@ -1,0 +1,33 @@
+
+dir_rule:
+  base_dir: \tmp
+  rule: Bd_Pname
+download:
+  cache: true
+  image:
+    decode: true
+    suffix: null
+  threading:
+    image: 30
+    photo: 18
+log: true
+plugins:
+  valid: log
+version: '2.1'
+# 插件的配置示例
+plugins:
+  after_init:
+    - plugin: usage_log # 实时打印硬件占用率的插件
+      kwargs:
+        interval: 0.5 # 间隔时间
+        enable_warning: true # 占用过大时发出预警
+  after_album:
+    # img2pdf也支持合并整个本子，把上方的after_photo改为after_album即可。
+    # https://github.com/hect0x7/JMComic-Crawler-Python/discussions/258
+    # 配置到after_album时，需要修改filename_rule参数，不能写Pxx只能写Axx示例如下
+    - plugin: img2pdf
+      kwargs:
+        pdf_dir: \tmp\pdf # pdf存放文件夹
+        filename_rule: Aid # pdf命名规则，A代表album, name代表使用album.name也就是本子名称
+
+
