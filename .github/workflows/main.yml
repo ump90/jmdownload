@@ -1,1 +1,46 @@
+# .github/workflows/download_jmcomic.yml
+name: Download JMComic Album
 
+on:
+  workflow_dispatch:
+    inputs:
+      album_id:
+        description: 'Album ID to download'
+        required: true
+        type: string
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install jmcomic
+
+    - name: mkdir 
+      run: |
+        mkdir /tmp/pdf
+
+
+    - name: Run download script
+      run: |
+        python jm.py ${{ github.event.inputs.album_id }} option.yml
+    
+    - name: Package PDF into ZIP
+      run: |
+          cd /tmp/pdf
+          zip ${GITHUB_WORKSPACE}/album_${{ github.event.inputs.album_id }}.zip ${{ github.event.inputs.album_id }}.pdf
+  
+    - name: Upload ZIP Artifact
+      uses: actions/upload-artifact@v4
+      with:
+          name: album_${{ github.event.inputs.album_id }}
+          path: album_${{ github.event.inputs.album_id }}.zip
