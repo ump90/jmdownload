@@ -33,6 +33,8 @@ jobs:
         python jm.py ${{ github.event.inputs.album_id }} option.yml
     - name: Set up rclone
       uses: AnimMouse/setup-rclone@v1    
+      with:
+        rclone_config: ${{ secrets.RCLONE_CONFIG }}
     - name: mv file
       run: |
         rclone copy --ignore-existing --progress /tmp/pdf/${{ github.event.inputs.album_id }}.pdf onedrive:PDF/
