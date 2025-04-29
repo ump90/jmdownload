@@ -28,19 +28,11 @@ jobs:
     - name: mkdir 
       run: |
         mkdir /tmp/pdf
-
-
     - name: Run download script
       run: |
         python jm.py ${{ github.event.inputs.album_id }} option.yml
-    
-    - name: Package PDF into ZIP
+    - name: Set up rclone
+      uses: AnimMouse/setup-rclone@v1    
+    - name: mv file
       run: |
-          cd /tmp/pdf
-          zip ${GITHUB_WORKSPACE}/album_${{ github.event.inputs.album_id }}.zip ${{ github.event.inputs.album_id }}.pdf
-  
-    - name: Upload ZIP Artifact
-      uses: actions/upload-artifact@v4
-      with:
-          name: album_${{ github.event.inputs.album_id }}
-          path: album_${{ github.event.inputs.album_id }}.zip
+        rclone copy --ignore-existing --progress /tmp/pdf/${{ github.event.inputs.album_id }}.pdf onedrive:PDF/
